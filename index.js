@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import authRoute from "./Routes/authRoute.js";
 import userRoutes from "./Routes/userRoutes.js";
+import postRoute from "./Routes/postRoute.js";
 
 const app = express();
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
@@ -26,3 +27,4 @@ mongoose
 
 app.use("/auth", authRoute);
 app.use("/user", userRoutes);
+app.use("/post", postRoute);
