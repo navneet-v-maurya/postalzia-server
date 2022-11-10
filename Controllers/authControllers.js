@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 //register a new user
 export const register = async (req, res) => {
@@ -20,8 +21,11 @@ export const register = async (req, res) => {
         .status(404)
         .json({ message: "user with this username alreday exists" });
     }
-    await newUser.save();
-    res.status(200).json(newUser);
+    const user = await newUser.save();
+    const token = jwt.sign({ userName: user.userName, id: user._id }, "MERN", {
+      expiresIn: "1h",
+    });
+    res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -38,7 +42,14 @@ export const login = async (req, res) => {
       if (!validPass) {
         return res.status(403).json({ message: "Wrong password" });
       }
-      return res.status(200).json(user);
+      const token = jwt.sign(
+        { userName: user.userName, id: user._id },
+        "MERN",
+        {
+          expiresIn: "1h",
+        }
+      );
+      return res.status(200).json({ user, token });
     }
     res
       .status(404)
