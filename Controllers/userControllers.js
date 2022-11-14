@@ -1,7 +1,22 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-446666666666666; //get a user
+//get allUsers
+export const getAllUsers = async (req, res) => {
+  try {
+    const data = await User.find();
+    const allUsers = data.map((user) => {
+      const { password, ...otherDatils } = user._doc;
+      return otherDatils;
+    });
+    res.status(200).json(allUsers);
+  } catch (error) {
+    console.log({ message: error.message });
+  }
+};
+
+//get a user
 export const getUser = async (req, res) => {
   const id = req.params.id;
   try {
@@ -19,15 +34,22 @@ export const getUser = async (req, res) => {
 //update a user
 export const updateUser = async (req, res) => {
   const id = req.params.id;
-  const { currentUserId, isAdmin, password } = req.body;
-  if (currentUserId === id || isAdmin) {
+  const { _id, isAdmin, password } = req.body;
+  if (_id === id || isAdmin) {
     try {
       if (password) {
         const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(password, salt);
       }
       const user = await User.findByIdAndUpdate(id, req.body, { new: true });
-      res.status(200).json(user);
+      const token = jwt.sign(
+        { userName: user.userName, id: user._id },
+        "MERN",
+        {
+          expiresIn: "1h",
+        }
+      );
+      res.status(200).json({ user, token });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
