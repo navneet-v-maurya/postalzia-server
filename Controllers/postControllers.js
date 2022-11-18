@@ -46,10 +46,10 @@ export const updatePost = async (req, res) => {
 //delete a post
 export const deletePost = async (req, res) => {
   const id = req.params.id;
-  const { userId } = req.body;
+  const { user } = req.body;
   try {
     const post = await Post.findById(id);
-    if (post.userId === userId) {
+    if (post.userId === user) {
       await post.deleteOne();
       res.status(200).json({ message: "post deleted successfully" });
     } else {
