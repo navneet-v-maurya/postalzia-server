@@ -29,3 +29,6 @@ mongoose
 app.use("/auth", authRoute);
 app.use("/user", userRoutes);
 app.use("/post", postRoute);
+app.use("/", (req, res) => {
+  res.send("hello to memories api");
+});

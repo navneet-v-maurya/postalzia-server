@@ -1,6 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 //get allUsers
 export const getAllUsers = async (req, res) => {
@@ -44,7 +47,7 @@ export const updateUser = async (req, res) => {
       const user = await User.findByIdAndUpdate(id, req.body, { new: true });
       const token = jwt.sign(
         { userName: user.userName, id: user._id },
-        "MERN",
+        process.env.KEY,
         {
           expiresIn: "1h",
         }
