@@ -6,6 +6,8 @@ import authRoute from "./Routes/authRoute.js";
 import userRoutes from "./Routes/userRoutes.js";
 import postRoute from "./Routes/postRoute.js";
 import dotenv from "dotenv";
+import chatRouter from "./Routes/chatRoute.js";
+import messageRouter from "./Routes/messageRouter.js";
 
 const app = express();
 dotenv.config();
@@ -29,6 +31,8 @@ mongoose
 app.use("/auth", authRoute);
 app.use("/user", userRoutes);
 app.use("/post", postRoute);
+app.use("/chat", chatRouter);
+app.use("/message", messageRouter);
 app.use("/", (req, res) => {
   res.send("hello to memories api");
 });

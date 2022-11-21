@@ -1,8 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-
 dotenv.config();
 //register a new user
 export const register = async (req, res) => {
@@ -24,14 +22,8 @@ export const register = async (req, res) => {
         .json({ message: "user with this username alreday exists" });
     }
     const user = await newUser.save();
-    const token = jwt.sign(
-      { userName: user.userName, id: user._id },
-      process.env.KEY,
-      {
-        expiresIn: "1h",
-      }
-    );
-    res.status(200).json({ user, token });
+
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -48,14 +40,8 @@ export const login = async (req, res) => {
       if (!validPass) {
         return res.status(403).json({ message: "Wrong password" });
       }
-      const token = jwt.sign(
-        { userName: user.userName, id: user._id },
-        process.env.KEY,
-        {
-          expiresIn: "1h",
-        }
-      );
-      return res.status(200).json({ user, token });
+
+      return res.status(200).json({ user });
     }
     res
       .status(404)

@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -45,14 +44,8 @@ export const updateUser = async (req, res) => {
         req.body.password = await bcrypt.hash(password, salt);
       }
       const user = await User.findByIdAndUpdate(id, req.body, { new: true });
-      const token = jwt.sign(
-        { userName: user.userName, id: user._id },
-        process.env.KEY,
-        {
-          expiresIn: "1h",
-        }
-      );
-      res.status(200).json({ user, token });
+
+      res.status(200).json({ user });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
